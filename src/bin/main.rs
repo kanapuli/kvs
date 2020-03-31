@@ -1,6 +1,7 @@
 extern crate clap;
 
 use clap::{App, Arg, SubCommand};
+use std::process::exit;
 
 fn main() {
     let app = App::new("Kvs - InMemory Key value store")
@@ -36,4 +37,20 @@ fn main() {
                 .arg(Arg::with_name("VALUE").help("string value").required(true)),
         )
         .get_matches();
+
+    match app.subcommand() {
+        ("get", Some(_args)) => {
+            eprintln!("unimplemented");
+            exit(1);
+        }
+        ("set", Some(_args)) => {
+            eprintln!("unimplemented");
+            exit(1);
+        }
+        ("rm", Some(_args)) => {
+            eprintln!("unimplemented");
+            exit(1);
+        }
+        _ => unreachable!(),
+    }
 }
