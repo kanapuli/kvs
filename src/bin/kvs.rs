@@ -4,10 +4,10 @@ use clap::{App, AppSettings, Arg, SubCommand};
 use std::process::exit;
 
 fn main() {
-    let app = App::new("Kvs - InMemory Key value store")
-        .version("1.0")
-        .author("kanapuli")
-        .about("A superfast InMemory key value store")
+    let app = App::new(env!("CARGO_PKG_NAME"))
+        .version(env!("CARGO_PKG_VERSION"))
+        .author(env!("CARGO_PKG_AUTHORS"))
+        .about(env!("CARGO_PKG_DESCRIPTION"))
         .setting(AppSettings::ArgRequiredElseHelp)
         .setting(AppSettings::ColoredHelp)
         .setting(AppSettings::DisableHelpSubcommand)
