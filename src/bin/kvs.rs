@@ -1,6 +1,6 @@
 extern crate clap;
 
-use clap::{App, Arg, SubCommand};
+use clap::{App, AppSettings, Arg, SubCommand};
 use std::process::exit;
 
 fn main() {
@@ -8,6 +8,10 @@ fn main() {
         .version("1.0")
         .author("kanapuli")
         .about("A superfast InMemory key value store")
+        .setting(AppSettings::ArgRequiredElseHelp)
+        .setting(AppSettings::ColoredHelp)
+        .setting(AppSettings::DisableHelpSubcommand)
+        .setting(AppSettings::VersionlessSubcommands)
         .subcommand(
             SubCommand::with_name("get")
                 .about("get - retrieves a value for the given key")
