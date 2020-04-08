@@ -141,7 +141,7 @@ fn overwrite_value() {
 fn get_non_existent_value() {
     let mut store = KvStore::new();
 
-    store.set("key1".to_owned(), "value1".to_owned());
+    //store.set("key1".to_owned(), "value1".to_owned());
     assert_eq!(store.get("key2".to_owned()), None);
 }
 
