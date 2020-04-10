@@ -28,7 +28,7 @@ impl KvStore {
     }
 
     //remove remove a key and a value from the in-memory store
-    pub fn remove(&mut self, _key: String) {
-        unimplemented!();
+    pub fn remove(&mut self, key: String) {
+        self.map.remove(&key);
     }
 }
