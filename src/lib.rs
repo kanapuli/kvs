@@ -14,8 +14,8 @@ impl KvStore {
     }
 
     //set creates a new Key Value pair
-    pub fn set(&mut self, _key: String, _value: String) {
-        unimplemented!();
+    pub fn set(&mut self, key: String, value: String) {
+        self.map.insert(key, value);
     }
 
     //get gets the value for a key
