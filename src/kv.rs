@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::path::Path;
+
 //KvStore stores the key and values in memory
 pub struct KvStore {
     map: HashMap<String, String>,
@@ -30,5 +32,9 @@ impl KvStore {
     //remove remove a key and a value from the in-memory store
     pub fn remove(&mut self, key: String) {
         self.map.remove(&key);
+    }
+
+    pub fn open(&self, _path: &Path) -> Result<KvStore> {
+        unimplemented!();
     }
 }
