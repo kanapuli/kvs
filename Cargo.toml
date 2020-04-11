@@ -8,12 +8,11 @@ description = "An in-memory key value store"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# assert_cmd = "1.0.0"
+assert_cmd = "1.0.0"
 predicates = "1.0.4"
 clap = "2.33.0"
 
 [dev-dependencies]
-assert_cmd = "0.11.0"
 predicates = "1.0.0"
 tempfile = "3.0.7"
 walkdir = "2.2.7"
