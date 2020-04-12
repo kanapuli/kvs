@@ -21,7 +21,7 @@ pub enum KvsError {
 }
 
 //converts io::Error to KvsError
-impl From<io: Error> for KvsError {
+impl From<io::Error> for KvsError {
     fn from(err: io::Error) -> KvsError {
         KvsError::Io(err)
     }
