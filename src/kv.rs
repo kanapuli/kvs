@@ -34,7 +34,7 @@ impl KvStore {
         self.map.remove(&key);
     }
 
-    pub fn open(&self, _path: &Path) -> Result<KvStore> {
-        unimplemented!();
-    }
+    //    pub fn open(&self, _path: &Path) -> Result<KvStore> {
+    //        unimplemented!();
+    //    }
 }
