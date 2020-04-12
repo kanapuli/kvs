@@ -27,3 +27,9 @@ impl From<io: Error> for KvsError {
         KvsError::Io(err)
     }
 }
+
+impl From<serde_json::Error> for KvsError {
+    fn from(err: serde_json::Error) -> KvsError {
+        KvsError::Serde(err)
+    }
+}
