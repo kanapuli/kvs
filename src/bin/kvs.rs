@@ -1,9 +1,10 @@
 extern crate clap;
 
 use clap::{App, AppSettings, Arg, SubCommand};
+use kvs::Result;
 use std::process::exit;
 
-fn main() {
+fn main() -> Result<()> {
     let app = App::new(env!("CARGO_PKG_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
@@ -56,5 +57,6 @@ fn main() {
             exit(1);
         }
         _ => unreachable!(),
-    }
+    };
+    Ok(())
 }
