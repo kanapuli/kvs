@@ -21,3 +21,9 @@ pub enum KvsError {
     #[fail(display = "Unexpected command type")]
     UnexpectedCommandType,
 }
+
+impl From<io: Error> for KvsError {
+    fn from(err: io::Error) -> KvsError {
+        KvsError::Io(err)
+    }
+}
