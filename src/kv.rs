@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::path::Path;
 
 //KvStore stores the key and values in memory
 pub struct KvStore {
