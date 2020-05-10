@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 use std::fs::File;
 use std::collections::HashMap;
-use std::io::{BufReader,BufWriter, Read, Seek, Write};
+use std::io::{BufReader,BufWriter, Read, Seek, SeekFrom, Write};
+use crate::{KvsError, Result};
 
 //KvStore stores the key and values in memory
 pub struct KvStore {
@@ -15,7 +16,24 @@ pub struct KvStore {
 
 struct BufReaderWithPos<R: Read + Seek> {
   reader: BufReader<R>,
-  pos: u64
+  pos: u64,
+}
+
+struct BufWriterWithPos<W: Write + Seek>{
+  writer: BufWriter<W>,
+  pos: u64,
+}
+
+impl<W: Write + Seek> BufWriterWithPos<W> {
+  fn new(mut inner: W) -> Result<Self> {
+    let pos = inner.seek(SeekFrom::Current(0))?;
+    Ok(BufWriterWithPos{
+      writer: BufWriter::new(inner),
+      pos,
+    })
+    
+  }
+
 }
 
 //impl KvStore {
