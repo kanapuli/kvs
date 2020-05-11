@@ -1,11 +1,12 @@
-use std::path::PathBuf;
+//use std::path::PathBuf;
 use std::io;
-use std::fs::File;
-use std::collections::HashMap;
+//use std::fs::File;
+//use std::collections::HashMap;
 use std::io::{BufReader,BufWriter, Read, Seek, SeekFrom, Write};
 use crate::{Result};
 
 //KvStore stores the key and values in memory
+pub struct KvStore{}
 //pub struct KvStore {
 //  //directory for the log to store
 //  path: PathBuf,
@@ -37,6 +38,16 @@ impl <R: Read + Seek> Read for BufReaderWithPos<R>{
     let length = self.reader.read(buf)?;
     self.pos += length as u64;
     Ok(length)
+  }
+}
+
+impl <R: Read + Seek> Seek for BufReaderWithPos<R>{
+  fn seek(&mut self, pos: SeekFrom) -> io::Result<u64>{
+    //Seek provides a cursor that can be moved within a stream
+    //of bytes.
+    //Seek to an offset ,in bytes, in the underlying reader
+    self.pos = self.reader.seek(pos)?;
+    Ok(self.pos)
   }
 }
 
