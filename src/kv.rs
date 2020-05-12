@@ -1,19 +1,39 @@
-use std::path::PathBuf;
-use std::io;
+extern crate serde;
+
 use std::fs::File;
+use std::io;
+use std::path::PathBuf;
 //use std::collections::HashMap;
 use crate::Result;
+use serde::{Deserialize, Serialize};
+//use serde_json::Deserializer;
 use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 
 //KvStore stores the key and values in memory
 pub struct KvStore {
-  //log file reader
-  reader: BufReaderWithPos<File>,
-  //file writer
-  writer: BufWriterWithPos<File>,
-  //log file path
-  path: PathBuf,
+    //log file reader
+    reader: BufReaderWithPos<File>,
+    //file writer
+    writer: BufWriterWithPos<File>,
+    //log file path
+    path: PathBuf,
+}
 
+//Enum to represent command
+#[derive(Deserialize, Serialize, Debug)]
+enum Command {
+    Set { key: String, value: String },
+    Remove { key: String },
+}
+
+impl Command {
+  fn set(key: String, value: String) -> Self {
+    Command::Set{key, value}
+  }
+
+  fn rm(key: String) -> Self {
+    Command::Remove{key}
+  }
 }
 
 struct BufReaderWithPos<R: Read + Seek> {
@@ -77,12 +97,11 @@ impl<W: Write + Seek> Write for BufWriterWithPos<W> {
     }
 }
 
-impl <W: Write + Seek> Seek for BufWriterWithPos<W> {
-
-  fn seek(&mut self, pos: SeekFrom) -> io::Result<u64> {
-    self.pos = self.writer.seek(pos)?;
-    Ok(self.pos)
-  }
+impl<W: Write + Seek> Seek for BufWriterWithPos<W> {
+    fn seek(&mut self, pos: SeekFrom) -> io::Result<u64> {
+        self.pos = self.writer.seek(pos)?;
+        Ok(self.pos)
+    }
 }
 
 //impl KvStore {
