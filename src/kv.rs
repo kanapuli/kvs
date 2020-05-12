@@ -1,20 +1,20 @@
-//use std::path::PathBuf;
+use std::path::PathBuf;
 use std::io;
-//use std::fs::File;
+use std::fs::File;
 //use std::collections::HashMap;
 use crate::Result;
 use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 
 //KvStore stores the key and values in memory
-pub struct KvStore {}
-//pub struct KvStore {
-//  //directory for the log to store
-//  path: PathBuf,
-//  readers: HashMap<u64, BufReaderWithPos<File>>,
-//  //writer of the current log
-//  writer: BufWriterWithPos<File>,
-//
-//}
+pub struct KvStore {
+  //log file reader
+  reader: BufReaderWithPos<File>,
+  //file writer
+  writer: BufWriterWithPos<File>,
+  //log file path
+  path: PathBuf,
+
+}
 
 struct BufReaderWithPos<R: Read + Seek> {
     reader: BufReader<R>,
