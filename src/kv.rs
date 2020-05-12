@@ -77,6 +77,14 @@ impl<W: Write + Seek> Write for BufWriterWithPos<W> {
     }
 }
 
+impl <W: Write + Seek> Seek for BufWriterWithPos<W> {
+
+  fn seek(&mut self, pos: SeekFrom) -> io::Result<u64> {
+    self.pos = self.writer.seek(pos)?;
+    Ok(self.pos)
+  }
+}
+
 //impl KvStore {
 //    #[warn(dead_code)]
 //    // creates a new instance of KvStore
