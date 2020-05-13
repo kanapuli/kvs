@@ -8,6 +8,7 @@ use crate::Result;
 use serde::{Deserialize, Serialize};
 //use serde_json::Deserializer;
 use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
+use std::ops::Range;
 
 //KvStore stores the key and values in memory
 pub struct KvStore {
@@ -36,6 +37,23 @@ impl Command {
   }
 }
 
+//CommandPos represents the length and position of json-serialized
+//command in the log
+struct CommandPos {
+  gen: u64,
+  pos: u64,
+  len: u64,
+}
+
+impl From<(u64, Range<u64>)> for CommandPos{
+  fn from((gen, range): (u64, Range<u64>)) -> Self {
+    CommandPos {
+      gen,
+      pos: range.start,
+      len: range.end - range.start
+    }
+  }
+}
 struct BufReaderWithPos<R: Read + Seek> {
     reader: BufReader<R>,
     pos: u64,
