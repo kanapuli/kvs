@@ -9,8 +9,11 @@ use serde::{Deserialize, Serialize};
 //use serde_json::Deserializer;
 use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 use std::ops::Range;
+use std::collections::BTreeMap;
 
-//KvStore stores the key and values in memory
+//KvStore stores the key and values in the log files. 
+//The log files are created with monotonically increasing number extension
+//For Faster query, an index is stored in RAM as a BTreeMap
 pub struct KvStore {
     //log file reader
     reader: BufReaderWithPos<File>,
@@ -18,6 +21,8 @@ pub struct KvStore {
     writer: BufWriterWithPos<File>,
     //log file path
     path: PathBuf,
+    current_gen: u64,
+    index: BTreeMap<String,CommandPos>,
 }
 
 //Enum to represent command
