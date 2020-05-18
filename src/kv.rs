@@ -2,7 +2,7 @@ extern crate serde;
 
 use std::fs::File;
 use std::io;
-use std::path::PathBuf;
+use std::path::{PathBuf,Path};
 //use std::collections::HashMap;
 use crate::Result;
 use serde::{Deserialize, Serialize};
@@ -27,6 +27,14 @@ pub struct KvStore {
     //uncompacted represents the number of bytes representing
     //"stale" commands that could be deleted during compaction
     uncompacted: u64,
+}
+
+impl KvStore {
+
+    //log_path gives a name for a new logfile
+    fn log_path(dir: &Path, gen: u64) -> PathBuf {
+        dir.join(format!("{}.log", gen))
+    }
 }
 
 //Enum to represent command
