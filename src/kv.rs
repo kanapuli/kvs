@@ -1,18 +1,19 @@
 extern crate serde;
 
-use std::fs::File;
-use std::io;
-use std::path::{PathBuf,Path};
-//use std::collections::HashMap;
 use crate::Result;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::fs::File;
+use std::io;
+use std::path::{Path, PathBuf};
 //use serde_json::Deserializer;
+use std::collections::BTreeMap;
+use std::fs::OpenOptions;
 use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 use std::ops::Range;
-use std::collections::BTreeMap;
 
 const COMPACTION_THRESHOLD: u64 = 1024;
-//KvStore stores the key and values in the log files. 
+//KvStore stores the key and values in the log files.
 //The log files are created with monotonically increasing number extension
 //For Faster query, an index is stored in RAM as a BTreeMap
 pub struct KvStore {
@@ -23,20 +24,35 @@ pub struct KvStore {
     //log file path
     path: PathBuf,
     current_gen: u64,
-    index: BTreeMap<String,CommandPos>,
+    index: BTreeMap<String, CommandPos>,
     //uncompacted represents the number of bytes representing
     //"stale" commands that could be deleted during compaction
     uncompacted: u64,
 }
 
 impl KvStore {
-
-    //log_path gives a name for a new logfile
-    fn log_path(dir: &Path, gen: u64) -> PathBuf {
-        dir.join(format!("{}.log", gen))
+    fn new_log_file(
+        path: &Path,
+        gen: u64,
+        readers: &mut HashMap<u64, BufReaderWithPos<File>>,
+    ) -> Result<BufWriterWithPos<File>> {
+        let path = log_path(path, gen);
+        let writer = BufWriterWithPos::new(
+            OpenOptions::new()
+                .create(true)
+                .write(true)
+                .append(true)
+                .open(&path)?,
+        )?;
+        readers.insert(gen, BufReaderWithPos::new(File::open(&path)?)?);
+        Ok(writer)
     }
 }
 
+//log_path gives a name for a new logfile
+fn log_path(dir: &Path, gen: u64) -> PathBuf {
+    dir.join(format!("{}.log", gen))
+}
 //Enum to represent command
 #[derive(Deserialize, Serialize, Debug)]
 enum Command {
@@ -45,31 +61,31 @@ enum Command {
 }
 
 impl Command {
-  fn set(key: String, value: String) -> Self {
-    Command::Set{key, value}
-  }
+    fn set(key: String, value: String) -> Self {
+        Command::Set { key, value }
+    }
 
-  fn rm(key: String) -> Self {
-    Command::Remove{key}
-  }
+    fn rm(key: String) -> Self {
+        Command::Remove { key }
+    }
 }
 
 //CommandPos represents the length and position of json-serialized
 //command in the log
 struct CommandPos {
-  gen: u64,
-  pos: u64,
-  len: u64,
+    gen: u64,
+    pos: u64,
+    len: u64,
 }
 
-impl From<(u64, Range<u64>)> for CommandPos{
-  fn from((gen, range): (u64, Range<u64>)) -> Self {
-    CommandPos {
-      gen,
-      pos: range.start,
-      len: range.end - range.start
+impl From<(u64, Range<u64>)> for CommandPos {
+    fn from((gen, range): (u64, Range<u64>)) -> Self {
+        CommandPos {
+            gen,
+            pos: range.start,
+            len: range.end - range.start,
+        }
     }
-  }
 }
 struct BufReaderWithPos<R: Read + Seek> {
     reader: BufReader<R>,
