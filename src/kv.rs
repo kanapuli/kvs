@@ -11,6 +11,7 @@ use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 use std::ops::Range;
 use std::collections::BTreeMap;
 
+const COMPACTION_THRESHOLD: u64 = 1024;
 //KvStore stores the key and values in the log files. 
 //The log files are created with monotonically increasing number extension
 //For Faster query, an index is stored in RAM as a BTreeMap
@@ -23,6 +24,9 @@ pub struct KvStore {
     path: PathBuf,
     current_gen: u64,
     index: BTreeMap<String,CommandPos>,
+    //uncompacted represents the number of bytes representing
+    //"stale" commands that could be deleted during compaction
+    uncompacted: u64,
 }
 
 //Enum to represent command
